@@ -1,0 +1,35 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+}
+
+.tabs button {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #2f5233;
+  background: #fdfbf4;
+  color: #2f5233;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  background: #2f5233;
+  color: #fdfbf4;
+}
+
+.body {
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  width: 100%;
+  box-sizing: border-box;
+}

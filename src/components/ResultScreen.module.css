@@ -1,0 +1,159 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  background: #fdfbf4;
+  border: 1px solid #c9c2ad;
+  border-radius: 10px;
+  width: 540px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.message {
+  margin: 0;
+  color: #6b6355;
+  font-size: 14px;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rowWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #c9c2ad;
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.winTypeLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: #2f5233;
+}
+
+.yakulessTag {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+  color: #b3261e;
+}
+
+.detail {
+  padding: 8px 10px;
+  border: 1px solid #c9c2ad;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  background: #f2ecd9;
+}
+
+.yakuless {
+  margin: 0;
+  font-size: 13px;
+  color: #b3261e;
+  font-weight: 600;
+}
+
+.yakuList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: #2f5233;
+}
+
+.yakuList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.han {
+  font-weight: 600;
+}
+
+.total {
+  border-top: 1px dashed #c9c2ad;
+  padding-top: 4px;
+  margin-top: 2px;
+  font-weight: 700;
+}
+
+.fuList {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 8px 0 0;
+  border-top: 1px dashed #c9c2ad;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: #2f5233;
+}
+
+.fuList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.pointsBlock {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.pointsMain {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rankTag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: #b3261e;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.points {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2a1f;
+}
+
+.bonus {
+  font-size: 11px;
+  color: #6b6355;
+}
+
+.paymentsRow {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: #6b6355;
+}
+
+.fuHan {
+  font-size: 11px;
+  color: #6b6355;
+}

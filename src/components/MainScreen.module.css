@@ -1,0 +1,28 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 760px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.modeSwitch {
+  display: flex;
+  gap: 8px;
+}
+
+.modeSwitch button {
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: 1px solid #2f5233;
+  background: #fdfbf4;
+  color: #2f5233;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.modeSwitch button.active {
+  background: #2f5233;
+  color: #fdfbf4;
+}

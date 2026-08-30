@@ -1,0 +1,13 @@
+body {
+  background: #1c2b1e;
+  font-family: "Hiragino Sans", "Meiryo", sans-serif;
+}
+
+.app-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}

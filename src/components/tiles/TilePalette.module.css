@@ -1,0 +1,28 @@
+.palette {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: #2f5233;
+  border-radius: 10px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.suitLabel {
+  width: 44px;
+  flex-shrink: 0;
+  color: #e7e2cf;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}

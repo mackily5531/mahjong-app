@@ -1,0 +1,76 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #f2ecd9;
+  border: 1px solid #c9c2ad;
+  border-radius: 8px;
+  width: 480px;
+  box-sizing: border-box;
+}
+
+.columns {
+  display: flex;
+  gap: 20px;
+}
+
+.column {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 13px;
+  color: #2f5233;
+  flex: 1;
+}
+
+.column li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.fuTotalLine {
+  color: #6b6355;
+  font-size: 12px;
+  padding-top: 2px;
+  border-top: 1px dashed #c9c2ad;
+}
+
+.han {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 6px;
+  border-top: 1px solid #c9c2ad;
+}
+
+.fuHan {
+  font-size: 13px;
+  font-weight: 600;
+  color: #2f5233;
+}
+
+.rankTag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: #b3261e;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.points {
+  margin-left: auto;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2a1f;
+}

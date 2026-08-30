@@ -1,0 +1,63 @@
+.hand {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  background: #fdfbf4;
+  border: 1px solid #c9c2ad;
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2f5233;
+}
+
+.count {
+  color: #6b6355;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: visible;
+  height: 72px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.concealed {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.melds {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  padding-left: 14px;
+  border-left: 2px solid #c9c2ad;
+  flex-shrink: 0;
+}
+
+.meldGroup {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.empty {
+  color: #a39d8c;
+  font-size: 13px;
+  align-self: center;
+}

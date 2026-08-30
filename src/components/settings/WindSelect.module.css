@@ -1,0 +1,29 @@
+.field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2f5233;
+}
+
+.buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.buttons button {
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid #2f5233;
+  background: #fdfbf4;
+  color: #2f5233;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.buttons button.active {
+  background: #2f5233;
+  color: #fdfbf4;
+}

@@ -1,0 +1,11 @@
+.row {
+  display: flex;
+  gap: 2px;
+}
+
+.image {
+  width: 34px;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}

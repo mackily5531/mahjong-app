@@ -1,0 +1,24 @@
+.row {
+  display: flex;
+  gap: 8px;
+}
+
+.row button {
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.hand {
+  border: 1px solid #2f5233;
+  background: #fdfbf4;
+  color: #2f5233;
+}
+
+.all {
+  border: 1px solid #b3261e;
+  background: #fdfbf4;
+  color: #b3261e;
+}

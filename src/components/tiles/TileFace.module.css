@@ -1,0 +1,28 @@
+.tile {
+  width: 44px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.08s ease;
+}
+
+.tile:hover:not(.disabled) {
+  transform: translateY(-3px);
+}
+
+.tile:active:not(.disabled) {
+  transform: translateY(0);
+}
+
+.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
