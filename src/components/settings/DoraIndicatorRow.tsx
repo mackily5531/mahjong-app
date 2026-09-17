@@ -28,7 +28,6 @@ export default function DoraIndicatorRow({
 
   function handleAdd(tile: Tile) {
     if (indicators.length >= max) return;
-    // globalUsedTilesには自分自身(indicators)も含まれているので、そのまま4枚上限として比較できる
     if (countTileKind(globalUsedTiles, tile.suit, tile.rank) >= 4) return;
     onChange([...indicators, tile]);
   }

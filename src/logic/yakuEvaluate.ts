@@ -8,6 +8,7 @@ import { buildCounts, tileToIndex } from "./tileIndex";
 import { decomposeConcealedPart, meldToGroup } from "./handGroups";
 import { isSevenPairs } from "./winCheck";
 import { countDora, countRedDora } from "./dora";
+import { calculateFu } from "./fu";
 import type { HandContext } from "./yakuCheckers";
 import {
   checkTanyao,
@@ -28,6 +29,7 @@ import {
   checkSanshokuDoukou,
   checkShousangen,
   checkHonroutou,
+  WIND_INDEX,
 } from "./yakuCheckers";
 
 export interface YakuEvaluationResult {
@@ -39,7 +41,7 @@ export interface YakuEvaluationResult {
   isChiitoitsu: boolean;
 }
 
-// 表示順: 立直→一発→ツモ→他の役(飜数が少ない順)→ドラ→抜きドラ→裏ドラ
+// 役リストをソートする
 function sortYaku(list: YakuResult[]): YakuResult[] {
   const order: Record<string, number> = {
     doubleriichi: 0,
@@ -59,6 +61,7 @@ function sortYaku(list: YakuResult[]): YakuResult[] {
   });
 }
 
+// 状況役(立直・一発・門前清自摸和・嶺上開花・槍槓・海底撈月/河底撈魚)を判定する
 function buildSituationalYaku(
   settings: HandSettings,
   winType: "tsumo" | "ron",
@@ -70,7 +73,6 @@ function buildSituationalYaku(
   const riichi = checkRiichi(settings, melds);
   if (riichi) list.push(riichi);
 
-  // 一発は嶺上開花・槍槓と複合しない(一発の巡目でカンが絡むと一発は消える)
   const rinshan = checkRinshan(settings, melds, winType);
   const chankan = checkChankan(settings, winType);
   const hasRinshanOrChankan = Boolean(rinshan) || Boolean(chankan);
@@ -92,7 +94,7 @@ function buildSituationalYaku(
   return list;
 }
 
-// 役が1つもない場合はドラを乗せない(役無しでは和了自体が成立しないため)
+// ドラ役を追加する
 function appendDoraYaku(
   base: YakuResult[],
   allTiles: Tile[],
@@ -185,9 +187,11 @@ export function evaluateYaku(
 
   let best: YakuResult[] = [];
   let bestHan = -1;
+  let bestFu = -1;
   let bestGroups: Group[] = [];
   let bestPairIndex = -1;
 
+  // すべての分解パターンを試し、役の合計飜数が最大になるものを採用する
   for (const decomposition of decompositions) {
     const ctx: HandContext = {
       groups: [...meldGroups, ...decomposition.groups],
@@ -199,6 +203,7 @@ export function evaluateYaku(
       mode,
     };
 
+    // 役を判定する
     const candidates: YakuResult[] = [...situational];
     const tanyao = checkTanyao(ctx);
     if (tanyao) candidates.push(tanyao);
@@ -226,9 +231,34 @@ export function evaluateYaku(
     const honroutou = checkHonroutou(ctx);
     if (honroutou) candidates.push(honroutou);
 
+    if (candidates.length === 0) continue; // 役が無い分解は比較対象にしない
+
     const totalHan = candidates.reduce((sum, y) => sum + y.han, 0);
-    if (totalHan > bestHan) {
+
+    // 飜数が現状のベストより低ければ、符を見るまでもなく不採用
+    if (totalHan < bestHan) continue;
+
+    // 符計算を行う
+    const fuResult = calculateFu({
+      groups: ctx.groups,
+      pairIndex: ctx.pairIndex,
+      winningIndex,
+      winType,
+      isMenzen,
+      seatWindIndex: WIND_INDEX[settings.seatWind],
+      roundWindIndex: WIND_INDEX[settings.roundWind],
+      isPinfu: candidates.some((y) => y.key === "pinfu"),
+      isChiitoitsu: false,
+    });
+
+    // 飜数が同じ場合は符の多い方を採用する
+    const isBetter =
+      totalHan > bestHan ||
+      (totalHan === bestHan && fuResult.roundedTotal > bestFu);
+
+    if (isBetter) {
       bestHan = totalHan;
+      bestFu = fuResult.roundedTotal;
       best = candidates;
       bestGroups = ctx.groups;
       bestPairIndex = ctx.pairIndex;

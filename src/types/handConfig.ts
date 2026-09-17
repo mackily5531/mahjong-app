@@ -2,6 +2,8 @@ import type { GameMode, Wind } from "./gameMode";
 import type { Tile } from "./tile";
 import type { Meld } from "./meld";
 
+
+// 手牌の状態
 export type RiichiState = "none" | "riichi" | "double";
 
 export interface HandConfig {

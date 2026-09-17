@@ -30,7 +30,7 @@ export default function ScoreDetail({
   winType,
   payments,
 }: ScoreDetailProps) {
-  if (isYakuman) {
+  if (isYakuman) { // 役満の場合の表示
     return (
       <div className={styles.wrapper}>
         <ul className={styles.column}>
@@ -67,7 +67,7 @@ export default function ScoreDetail({
     );
   }
 
-  return (
+  return ( // 役満でない場合の表示
     <div className={styles.wrapper}>
       <div className={styles.columns}>
         <ul className={styles.column}>

@@ -9,7 +9,7 @@ export interface Group {
 }
 
 export interface Decomposition {
-  groups: Group[]; // 濃厚(手牌)側の分解結果
+  groups: Group[]; // setsNeeded個の順子/刻子の組み合わせ
   pairIndex: number;
 }
 

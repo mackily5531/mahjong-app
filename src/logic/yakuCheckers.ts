@@ -6,7 +6,7 @@ import type { YakuResult } from "../types/yaku";
 import type { Meld } from "../types/meld";
 
 export interface HandContext {
-  groups: Group[]; // 副露+濃厚、合計4組
+  groups: Group[]; 
   pairIndex: number;
   isMenzen: boolean;
   winningIndex: number;
@@ -23,23 +23,27 @@ export const WIND_INDEX: Record<string, number> = {
 };
 const SANGEN_INDICES = new Set([31, 32, 33]);
 
+// 牌のインデックスが幺九牌(1/9牌または字牌)かどうか
 export function isTerminalOrHonorIndex(i: number): boolean {
   if (i >= 27) return true;
   const r = i % 9;
   return r === 0 || r === 8;
 }
 
+// 牌のインデックスが字牌かどうか
 function allIndices(ctx: HandContext): number[] {
   const indices = ctx.groups.flatMap(groupIndices);
   indices.push(ctx.pairIndex, ctx.pairIndex);
   return indices;
 }
 
+// 断幺九
 export function checkTanyao(ctx: HandContext): YakuResult | null {
   const hasTerminalOrHonor = allIndices(ctx).some(isTerminalOrHonorIndex);
   return hasTerminalOrHonor ? null : { key: "tanyao", name: "断幺九", han: 1 };
 }
 
+// 役牌
 export function checkYakuhai(ctx: HandContext): YakuResult[] {
   const results: YakuResult[] = [];
   const seatWindIndex = WIND_INDEX[ctx.settings.seatWind];
@@ -66,11 +70,13 @@ export function checkYakuhai(ctx: HandContext): YakuResult[] {
   return results;
 }
 
+// 対々和
 export function checkToitoi(ctx: HandContext): YakuResult | null {
   const allTriplets = ctx.groups.every((g) => g.type === "triplet");
   return allTriplets ? { key: "toitoi", name: "対々和", han: 2 } : null;
 }
 
+// 一盃口
 export function checkIipeikou(ctx: HandContext): YakuResult | null {
   if (!ctx.isMenzen) return null;
   const sequences = ctx.groups
@@ -84,6 +90,7 @@ export function checkIipeikou(ctx: HandContext): YakuResult | null {
   return null;
 }
 
+// 平和
 export function checkPinfu(ctx: HandContext): YakuResult | null {
   if (!ctx.isMenzen) return null;
   if (!ctx.groups.every((g) => g.type === "sequence")) return null;
@@ -113,6 +120,7 @@ export function checkPinfu(ctx: HandContext): YakuResult | null {
   return { key: "pinfu", name: "平和", han: 1 };
 }
 
+// 混一色/清一色
 export function checkHonitsuChinitsu(ctx: HandContext): YakuResult | null {
   const indices = allIndices(ctx);
   const suits = new Set(
@@ -120,13 +128,14 @@ export function checkHonitsuChinitsu(ctx: HandContext): YakuResult | null {
   );
   const hasHonor = indices.some((i) => i >= 27);
 
-  if (suits.size !== 1) return null; // 2色以上、または数牌が無い(字一色は未対応)
+  if (suits.size !== 1) return null; // 2色以上、または数牌が無い
 
   return hasHonor
     ? { key: "honitsu", name: "混一色", han: ctx.isMenzen ? 3 : 2 }
     : { key: "chinitsu", name: "清一色", han: ctx.isMenzen ? 6 : 5 };
 }
 
+// 立直
 export function checkRiichi(
   settings: HandSettings,
   melds: Meld[],
@@ -150,12 +159,14 @@ export function checkRiichi(
   return null;
 }
 
+// 一発
 export function checkIppatsu(settings: HandSettings): YakuResult | null {
   return settings.isIppatsu && settings.riichiState !== "none"
     ? { key: "ippatsu", name: "一発", han: 1 }
     : null;
 }
 
+// 嶺上開花
 export function checkRinshan(
   settings: HandSettings,
   melds: Meld[],
@@ -171,6 +182,7 @@ export function checkRinshan(
     : null;
 }
 
+// 槍槓
 export function checkChankan(
   settings: HandSettings,
   winType: "tsumo" | "ron",
@@ -179,6 +191,7 @@ export function checkChankan(
   return settings.isChankan ? { key: "chankan", name: "槍槓", han: 1 } : null;
 }
 
+// 海底摸月/河底撈魚
 export function checkHaiteiHoutei(
   settings: HandSettings,
   winType: "tsumo" | "ron",
@@ -191,7 +204,7 @@ export function checkHaiteiHoutei(
     : { key: "houtei", name: "河底撈魚", han: 1 };
 }
 
-// 三色同順: 同じ数字の順子が萬子・筒子・索子すべてに揃っている
+// 三色同順
 export function checkSanshokuDoujun(ctx: HandContext): YakuResult | null {
   const sequenceStarts = new Set(
     ctx.groups.filter((g) => g.type === "sequence").map((g) => g.startIndex),
@@ -208,7 +221,7 @@ export function checkSanshokuDoujun(ctx: HandContext): YakuResult | null {
   return null;
 }
 
-// 一気通貫: 同じ色で123・456・789がすべて揃っている
+// 一気通貫
 export function checkIttsuu(ctx: HandContext): YakuResult | null {
   const sequenceStarts = new Set(
     ctx.groups.filter((g) => g.type === "sequence").map((g) => g.startIndex),
@@ -225,7 +238,7 @@ export function checkIttsuu(ctx: HandContext): YakuResult | null {
   return null;
 }
 
-// 三暗刻: 暗刻(和了牌で完成させた場合を除く)が3組以上
+// 三暗刻
 export function checkSanankou(ctx: HandContext): YakuResult | null {
   let ankoCount = 0;
   for (const group of ctx.groups) {
@@ -244,7 +257,7 @@ function groupHasTerminalOrHonor(group: Group): boolean {
   return rankInSuit === 0 || rankInSuit === 6; // 1-2-3 または 7-8-9
 }
 
-// チャンタ/純全帯幺九: すべての面子・雀頭に幺九牌(老頭牌または字牌)が絡む
+// チャンタ/純全帯幺九
 export function checkChantaJunchan(ctx: HandContext): YakuResult | null {
   const pairOk = isTerminalOrHonorIndex(ctx.pairIndex);
   const groupsOk = ctx.groups.every(groupHasTerminalOrHonor);
@@ -258,7 +271,7 @@ export function checkChantaJunchan(ctx: HandContext): YakuResult | null {
     : { key: "junchan", name: "純全帯幺九", han: ctx.isMenzen ? 3 : 2 };
 }
 
-// 三色同刻: 同じ数字の刻子が萬子・筒子・索子すべてに揃っている
+// 三色同刻
 export function checkSanshokuDoukou(ctx: HandContext): YakuResult | null {
   const tripletRanks = new Set(
     ctx.groups
@@ -277,7 +290,7 @@ export function checkSanshokuDoukou(ctx: HandContext): YakuResult | null {
   return null;
 }
 
-// 小三元: 三元牌(白發中)のうち2種類が刻子、残り1種類が雀頭
+// 小三元
 export function checkShousangen(ctx: HandContext): YakuResult | null {
   const dragonTriplets = ctx.groups.filter(
     (g) => g.type === "triplet" && SANGEN_INDICES.has(g.startIndex),
@@ -288,7 +301,7 @@ export function checkShousangen(ctx: HandContext): YakuResult | null {
     : null;
 }
 
-// 混老頭: すべての面子・雀頭が老頭牌または字牌の刻子・対子で構成される(順子なし)
+// 混老頭
 export function checkHonroutou(ctx: HandContext): YakuResult | null {
   const noSequence = ctx.groups.every((g) => g.type === "triplet");
   const allTerminalOrHonor =

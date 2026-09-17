@@ -1,4 +1,4 @@
-// counts配列を直接書き換えながらバックトラックする。呼び出し側は複製したcountsを渡すこと
+// 牌の種類ごとの枚数を数える
 export function canDecomposeSets(
   counts: number[],
   setsNeeded: number,
@@ -6,7 +6,7 @@ export function canDecomposeSets(
   if (setsNeeded === 0) return counts.every((c) => c === 0);
 
   const i = counts.findIndex((c) => c > 0);
-  if (i === -1) return false; // 牌が余っているのにsetsNeededが0でない
+  if (i === -1) return false; // setsNeeded > 0 なのに牌が残っていない場合は不成立
 
   // 刻子(同じ牌3枚)
   if (counts[i] >= 3) {
@@ -18,7 +18,7 @@ export function canDecomposeSets(
     counts[i] += 3;
   }
 
-  // 順子(萬子・筒子・索子のみ、同じ色の中に収まる範囲のみ)
+  // 順子(萬子・筒子・索子のみ)
   if (i < 27) {
     const rankInSuit = i % 9; // 0-8 = rank1-9
     if (rankInSuit <= 6) {

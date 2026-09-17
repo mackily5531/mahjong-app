@@ -27,6 +27,7 @@ interface YakumanContext {
   winType: "tsumo" | "ron";
 }
 
+// 国士無双
 function checkKokushi(
   counts: number[],
   winningIndex: number,
@@ -42,6 +43,7 @@ function checkKokushi(
   };
 }
 
+// 四暗刻
 function checkSuuankou(ctx: YakumanContext): YakumanResult | null {
   let ankoCount = 0;
   for (const g of ctx.groups) {
@@ -53,7 +55,7 @@ function checkSuuankou(ctx: YakumanContext): YakumanResult | null {
     if (!effectiveOpen) ankoCount++;
   }
   if (ankoCount < 4) return null;
-  const isTanki = ctx.winningIndex === ctx.pairIndex;
+  const isTanki = ctx.winningIndex === ctx.pairIndex; // 単騎待ちで和了した場合は「四暗刻単騎」として扱う
   return {
     key: "suuankou",
     name: isTanki ? "四暗刻単騎" : "四暗刻",
@@ -61,6 +63,7 @@ function checkSuuankou(ctx: YakumanContext): YakumanResult | null {
   };
 }
 
+// 大三元
 function checkDaisangen(ctx: YakumanContext): YakumanResult | null {
   const count = ctx.groups.filter(
     (g) => g.type === "triplet" && SANGEN_INDICES.includes(g.startIndex),
@@ -76,12 +79,14 @@ function allIndices(ctx: YakumanContext): number[] {
   return indices;
 }
 
+// 字一色
 function checkTsuuiisou(ctx: YakumanContext): YakumanResult | null {
   return allIndices(ctx).every((i) => i >= 27)
     ? { key: "tsuuiisou", name: "字一色", multiplier: 1 }
     : null;
 }
 
+// 清老頭
 function checkChinroutou(ctx: YakumanContext): YakumanResult | null {
   const allTerminal = allIndices(ctx).every(
     (i) => i < 27 && (i % 9 === 0 || i % 9 === 8),
@@ -91,12 +96,14 @@ function checkChinroutou(ctx: YakumanContext): YakumanResult | null {
     : null;
 }
 
+// 緑一色
 function checkRyuuiisou(ctx: YakumanContext): YakumanResult | null {
   return allIndices(ctx).every((i) => GREEN_INDICES.has(i))
     ? { key: "ryuuiisou", name: "緑一色", multiplier: 1 }
     : null;
 }
 
+// 小四喜
 function checkShousuushii(ctx: YakumanContext): YakumanResult | null {
   const windTriplets = ctx.groups.filter(
     (g) => g.type === "triplet" && WIND_INDICES.includes(g.startIndex),
@@ -107,6 +114,7 @@ function checkShousuushii(ctx: YakumanContext): YakumanResult | null {
     : null;
 }
 
+// 大四喜
 function checkDaisuushii(ctx: YakumanContext): YakumanResult | null {
   const windTriplets = ctx.groups.filter(
     (g) => g.type === "triplet" && WIND_INDICES.includes(g.startIndex),
@@ -116,6 +124,7 @@ function checkDaisuushii(ctx: YakumanContext): YakumanResult | null {
     : null;
 }
 
+// 九蓮宝燈
 function checkChuurenPoutou(
   counts14: number[],
   winningIndex: number,
@@ -137,7 +146,7 @@ function checkChuurenPoutou(
 
   const withoutWinning = counts14.slice();
   withoutWinning[winningIndex]--;
-  const isPure = required.every((req, r) => withoutWinning[base + r] === req);
+  const isPure = required.every((req, r) => withoutWinning[base + r] === req); // 和了前から既にその牌を持っていた=純正九蓮宝燈
 
   return {
     key: "chuurenpoutou",
@@ -146,6 +155,7 @@ function checkChuurenPoutou(
   };
 }
 
+// 四槓子
 function checkSuukantsu(melds: Meld[]): YakumanResult | null {
   const kanCount = melds.filter(
     (m) => m.type === "minkan" || m.type === "ankan",
@@ -155,7 +165,7 @@ function checkSuukantsu(melds: Meld[]): YakumanResult | null {
     : null;
 }
 
-// 天和/地和: 自風が東なら天和、それ以外なら地和として扱う。副露や抜きドラがあると成立しない
+// 天和/地和: 自風が東なら天和、それ以外なら地和として扱う。
 function checkTenhouChihou(
   melds: Meld[],
   settings: HandSettings,
@@ -173,6 +183,7 @@ export interface YakumanEvaluationResult {
   totalMultiplier: number;
 }
 
+// 役満判定を行う
 export function evaluateYakuman(
   concealedTiles: Tile[],
   winningTile: Tile,

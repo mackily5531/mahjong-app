@@ -20,6 +20,7 @@ const SUIT_TITLE: Record<Tile["suit"], string> = {
   z: "字牌",
 };
 
+// 牌の枚数を数える
 function physicalCount(
   tiles: Tile[],
   suit: Tile["suit"],

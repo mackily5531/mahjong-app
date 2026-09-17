@@ -1,6 +1,6 @@
 export type GameMode = "yonma" | "sanma";
 
-// 自風・場風。三麻では北家が存在しないため選択肢から除外する想定
+// 自風・場風
 export type Wind = "east" | "south" | "west" | "north";
 
 export function availableWinds(mode: GameMode): Wind[] {

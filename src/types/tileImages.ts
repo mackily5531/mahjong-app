@@ -14,7 +14,7 @@ export function tileImageBaseName(tile: Tile): string {
   return `${SUIT_PREFIX[tile.suit]}${rankStr}${redSuffix}`;
 }
 
-// src/assets/tiles 配下のpngをビルド時に一括取得し、ファイル名→URLの対応表を作る
+// src/assets/tiles配下のpngをビルド時に一括取得し、ファイル名→URLの対応表を作る
 const imageModules = import.meta.glob("../assets/tiles/*.png", {
   eager: true,
 }) as Record<string, { default: string }>;
@@ -25,6 +25,7 @@ for (const path in imageModules) {
   imageMap[fileName] = imageModules[path].default;
 }
 
+// 牌画像のURLを取得する
 export function tileImageUrl(tile: Tile): string {
   const key = tileImageBaseName(tile);
   const url = imageMap[key];

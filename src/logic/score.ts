@@ -2,6 +2,7 @@ function computeBasePoints(
   fu: number,
   han: number,
 ): { base: number; rankName: string | null } {
+  // 満貫以上の判定
   if (han >= 13) return { base: 8000, rankName: "数え役満" };
   if (han >= 11) return { base: 6000, rankName: "三倍満" };
   if (han >= 8) return { base: 4000, rankName: "倍満" };
@@ -9,18 +10,18 @@ function computeBasePoints(
   if (han === 5) return { base: 2000, rankName: "満貫" };
 
   const raw = fu * Math.pow(2, 2 + han);
-  if (raw >= 2000) return { base: 2000, rankName: "満貫" };
+  if (raw >= 2000) return { base: 2000, rankName: "満貫" }; // 2000点以上は満貫扱い
   return { base: raw, rankName: null };
 }
 
 function roundUp100(n: number): number {
-  return Math.ceil(n / 100) * 100;
+  return Math.ceil(n / 100) * 100; // 100点単位に切り上げ
 }
 
 export interface PaymentItem {
   label: string;
-  baseAmount: number; // 本場を含まない1人あたりの金額
-  amount: number; // 本場を含む1人あたりの金額
+  baseAmount: number; // 本場を含まない1人あたりの点数
+  amount: number; // 本場を含む1人あたりの点数
 }
 
 export interface ScoreResult {
@@ -29,8 +30,8 @@ export interface ScoreResult {
   totalPoints: number;
   kyotakuLabel: string | null;
   payments: PaymentItem[];
-  tsumoLabelBase: string | null; // 本場を含まない表記(「1000オール」等)
-  tsumoLabelTotal: string | null; // 本場を含む表記(本場が無い場合はbaseと同じ値)
+  tsumoLabelBase: string | null; // 本場を含まない表記
+  tsumoLabelTotal: string | null; // 本場を含む表記
 }
 
 export function calculateScore(
@@ -52,7 +53,6 @@ export function calculateScore(
       1: "役満",
       2: "ダブル役満",
       3: "トリプル役満",
-      4: "四倍役満",
     };
     rankName = rankNames[yakumanMultiplier] ?? `${yakumanMultiplier}倍役満`;
   } else {
@@ -68,13 +68,14 @@ export function calculateScore(
   let basePoints: number;
   let totalPoints: number;
 
+  // ロン・ツモの点数計算
   if (winType === "ron") {
     const raw = isDealer ? base * 6 : base * 4;
     basePoints = roundUp100(raw);
     totalPoints = basePoints + honba * honbaRonUnit;
   } else {
     const honbaPerPayer = honba * 100;
-    if (isDealer) {
+    if (isDealer) { // 親ツモ
       const eachBase = roundUp100(base * 2);
       const each = eachBase + honbaPerPayer;
       const payerCount = playerCount - 1;
@@ -85,7 +86,7 @@ export function calculateScore(
       });
       basePoints = eachBase * payerCount;
       totalPoints = each * payerCount;
-    } else {
+    } else { // 子ツモ
       const dealerPayBase = roundUp100(base * 2);
       const otherPayBase = roundUp100(base * 1);
       const dealerPay = dealerPayBase + honbaPerPayer;
@@ -112,7 +113,7 @@ export function calculateScore(
 
   let tsumoLabelBase: string | null = null;
   let tsumoLabelTotal: string | null = null;
-  if (winType === "tsumo") {
+  if (winType === "tsumo") { // ツモの点数表記を作成
     if (isDealer) {
       tsumoLabelBase = `${payments[0].baseAmount}オール`;
       tsumoLabelTotal = `${payments[0].amount}オール`;

@@ -24,7 +24,7 @@ function buildTabs(mode: GameMode): { tab: PaletteTab; label: string }[] {
   ];
   tabs.push({ tab: "pon", label: "ポン" });
   if (mode === "yonma") {
-    tabs.push({ tab: "chi", label: "チー" }); // 三麻はチー無し(雀魂ルール)
+    tabs.push({ tab: "chi", label: "チー" }); // 三麻はチー無し
   }
   tabs.push({ tab: "minkan", label: "明槓" });
   tabs.push({ tab: "ankan", label: "暗槓" });

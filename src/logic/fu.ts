@@ -5,6 +5,7 @@ import { tileLabel } from "../types/tile";
 
 const SANGEN_INDICES = new Set([31, 32, 33]);
 
+// 幺九牌かどうか
 function isTerminalOrHonor(i: number): boolean {
   if (i >= 27) return true;
   const r = i % 9;
@@ -30,7 +31,7 @@ export interface FuResult {
 }
 
 export interface FuContext {
-  groups: Group[]; // 副露+濃厚、合計4組(七対子の場合は空でよい)
+  groups: Group[]; 
   pairIndex: number;
   winningIndex: number;
   winType: "tsumo" | "ron";
@@ -41,13 +42,14 @@ export interface FuContext {
   isChiitoitsu: boolean;
 }
 
+// 符計算を行う
 export function calculateFu(ctx: FuContext): FuResult {
-  if (ctx.isChiitoitsu) {
+  if (ctx.isChiitoitsu) { // 七対子は常に25符
     const items = [{ label: "七対子", fu: 25 }];
     return { items, rawTotal: 25, roundedTotal: 25 };
   }
 
-  if (ctx.isPinfu) {
+  if (ctx.isPinfu) { // 平和は常に20符(ロンの場合は30符)
     if (ctx.winType === "ron") {
       const items = [
         { label: "副底", fu: 20 },
@@ -61,27 +63,29 @@ export function calculateFu(ctx: FuContext): FuResult {
 
   const items: FuBreakdownItem[] = [{ label: "副底", fu: 20 }];
 
-  if (ctx.isMenzen && ctx.winType === "ron") {
+  if (ctx.isMenzen && ctx.winType === "ron") { // 門前ロンは10符加算
     items.push({ label: "門前加符", fu: 10 });
   }
-  if (ctx.winType === "tsumo") {
+  if (ctx.winType === "tsumo") { // 自摸は2符加算
     items.push({ label: "自摸", fu: 2 });
   }
 
   const isTanki = ctx.winningIndex === ctx.pairIndex;
-  if (isTanki) {
+  if (isTanki) { // 単騎待ちは2符加算
     items.push({ label: "単騎待ち", fu: 2 });
   }
 
+  // 雀頭の符計算
   if (SANGEN_INDICES.has(ctx.pairIndex)) {
-    items.push({ label: "雀頭(三元牌)", fu: 2 });
+    items.push({ label: "雀頭(三元牌)", fu: 2 }); // 三元牌の雀頭は2符
   } else {
     let windFu = 0;
     if (ctx.pairIndex === ctx.seatWindIndex) windFu += 2;
     if (ctx.pairIndex === ctx.roundWindIndex) windFu += 2;
-    if (windFu > 0) items.push({ label: "雀頭(風牌)", fu: windFu });
+    if (windFu > 0) items.push({ label: "雀頭(風牌)", fu: windFu }); // 自風・場風の雀頭はそれぞれ2符
   }
 
+  //待ちの種類による符計算
   for (const group of ctx.groups) {
     if (group.type === "sequence") {
       const indices = groupIndices(group);
@@ -91,13 +95,13 @@ export function calculateFu(ctx: FuContext): FuResult {
           (s % 9 === 0 && ctx.winningIndex === s + 2) ||
           ((s + 2) % 9 === 8 && ctx.winningIndex === s);
         const isKanchan = ctx.winningIndex === s + 1;
-        if (isPenchan) items.push({ label: "辺張待ち", fu: 2 });
-        else if (isKanchan) items.push({ label: "嵌張待ち", fu: 2 });
+        if (isPenchan) items.push({ label: "辺張待ち", fu: 2 }); // 辺張待ちは2符
+        else if (isKanchan) items.push({ label: "嵌張待ち", fu: 2 }); // 嵌張待ちは2符
       }
       continue;
     }
 
-    // 刻子・槓子: ロンで完成したシャンポン待ちの刻子は明刻扱い
+    // 刻子・槓子
     const isWinningTriplet = !isTanki && group.startIndex === ctx.winningIndex;
     const effectiveOpen =
       isWinningTriplet && ctx.winType === "ron" ? true : group.isOpen;

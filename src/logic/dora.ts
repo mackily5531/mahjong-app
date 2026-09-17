@@ -26,8 +26,8 @@ export function doraFromIndicator(indicator: Tile, mode: GameMode): Tile {
 
 const NORTH_INDEX = 30;
 
-// indicatorsからドラを求め、allTiles内の枚数を数える。
-// ドラが北(4z)の場合は、抜いた北(抜きドラ)もドラとして加算する。
+// indicatorsからドラを求め、allTiles内の枚数を数える
+// ドラが北(4z)の場合は、抜いた北(抜きドラ)もドラとして加算する
 export function countDora(
   allTiles: Tile[],
   indicators: Tile[],

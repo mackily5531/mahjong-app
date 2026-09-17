@@ -40,6 +40,7 @@ export default function ResultScreen({
   const [openKey, setOpenKey] = useState<string | null>(null);
 
   if (!isReady) {
+    // 牌が揃っていない場合はメッセージを表示
     return (
       <div className={styles.panel}>
         <p className={styles.message}>牌を選択してください</p>
@@ -48,6 +49,7 @@ export default function ResultScreen({
   }
 
   if (winningTiles.length === 0) {
+    // 和了牌がない場合はノーテン表示
     return (
       <div className={styles.panel}>
         <p className={styles.message}>ノーテン</p>
@@ -143,7 +145,7 @@ export default function ResultScreen({
                   {row.winType === "tsumo" ? "ツモ" : "ロン"}
                 </span>
 
-                {isYakuless ? (
+                {isYakuless ? ( // 役無しの場合は役無しタグを表示
                   <span className={styles.yakulessTag}>役無し</span>
                 ) : (
                   <div className={styles.pointsBlock}>
@@ -153,7 +155,7 @@ export default function ResultScreen({
                           {scoreResult.rankName}
                         </span>
                       )}
-                      {row.winType === "tsumo" &&
+                      {row.winType === "tsumo" && // ツモの点数表記を作成
                       scoreResult?.tsumoLabelBase ? (
                         scoreResult.tsumoLabelBase !==
                         scoreResult.tsumoLabelTotal ? (
@@ -166,7 +168,7 @@ export default function ResultScreen({
                             {scoreResult.tsumoLabelBase}
                           </span>
                         )
-                      ) : scoreResult &&
+                      ) : scoreResult && // ロンの点数表記を作成
                         scoreResult.basePoints !== scoreResult.totalPoints ? (
                         <span className={styles.points}>
                           {scoreResult.basePoints}点 → {scoreResult.totalPoints}
@@ -192,7 +194,7 @@ export default function ResultScreen({
                   </div>
                 )}
               </button>
-
+              // 展開部分
               {isOpen && (
                 <div className={styles.detail}>
                   {isYakuless ? (
