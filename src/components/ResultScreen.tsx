@@ -194,7 +194,8 @@ export default function ResultScreen({
                   </div>
                 )}
               </button>
-              {isOpen && ( // 展開部分
+              {/* 展開部分 */}
+              {isOpen && (
                 <div className={styles.detail}>
                   {isYakuless ? (
                     <p className={styles.yakuless}>役無しです</p>
