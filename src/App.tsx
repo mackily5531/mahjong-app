@@ -31,33 +31,49 @@ function App() {
   }, [hand.concealedTiles, hand.melds, hand.mode, hand.globalUsedTiles]);
 
   return (
-    <div className="app-layout">
-      <MainScreen
-        mode={hand.mode}
-        concealedTiles={hand.concealedTiles}
-        melds={hand.melds}
-        settings={hand.settings}
-        maxSelectable={hand.maxSelectable}
-        canAddMeld={hand.canAddMeld}
-        globalUsedTiles={hand.globalUsedTiles}
-        nukiDoraMax={hand.nukiDoraMax}
-        onModeChange={hand.setMode}
-        onSelectTile={hand.selectTile}
-        onRemoveTile={hand.removeTile}
-        onAddMeld={hand.addMeld}
-        onRemoveMeld={hand.removeMeld}
-        onSettingsChange={hand.updateSettings}
-        onResetHand={hand.resetHand}
-        onResetAll={hand.resetAll}
-      />
-      <ResultScreen
-        isReady={isReady}
-        winningTiles={winningTiles}
-        concealedTiles={hand.concealedTiles}
-        melds={hand.melds}
-        mode={hand.mode}
-        settings={hand.settings}
-      />
+    <div className="app-page">
+      <div className="app-layout">
+        <MainScreen
+          mode={hand.mode}
+          concealedTiles={hand.concealedTiles}
+          melds={hand.melds}
+          settings={hand.settings}
+          maxSelectable={hand.maxSelectable}
+          canAddMeld={hand.canAddMeld}
+          globalUsedTiles={hand.globalUsedTiles}
+          nukiDoraMax={hand.nukiDoraMax}
+          onModeChange={hand.setMode}
+          onSelectTile={hand.selectTile}
+          onRemoveTile={hand.removeTile}
+          onAddMeld={hand.addMeld}
+          onRemoveMeld={hand.removeMeld}
+          onSettingsChange={hand.updateSettings}
+          onResetHand={hand.resetHand}
+          onResetAll={hand.resetAll}
+        />
+        <ResultScreen
+          isReady={isReady}
+          winningTiles={winningTiles}
+          concealedTiles={hand.concealedTiles}
+          melds={hand.melds}
+          mode={hand.mode}
+          settings={hand.settings}
+        />
+      </div>
+
+      <footer className="app-footer">
+        <p>点数計算ルールは雀魂(Mahjong Soul)のルールに準拠しています。</p>
+        <p>
+          牌画像素材:{" "}
+          <a
+            href="https://www.ac-illust.com/main/detail.php?id=1431764"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            イラストAC
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }

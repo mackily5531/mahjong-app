@@ -10,4 +10,30 @@ body {
   padding: 24px;
   width: 100%;
   box-sizing: border-box;
+  flex: 1;
+}
+
+.app-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-footer {
+  margin-top: auto;
+  padding: 12px 24px;
+  font-size: 11px;
+  color: #a39d8c;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.app-footer a {
+  color: #a39d8c;
+}
+
+.app-footer a:hover {
+  color: #6b6355;
 }
