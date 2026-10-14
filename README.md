@@ -1,75 +1,111 @@
-# React + TypeScript + Vite
+# 麻雀 上がり牌検索・点数計算アプリ
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+13枚の手牌を選ぶと、上がり牌（待ち牌）を一覧表示し、上がり牌ごとの点数を計算するWebアプリです。
 
-Currently, two official plugins are available:
+**公開URL：** https://mahjong-app-rho-bay.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 制作の背景
 
-## React Compiler
+麻雀の点数計算は、役・符・ドラ・本場など考慮する要素が多く、慣れないと手間がかかります。
+「手牌を入れるだけで、待ち牌と点数がすぐにわかるツールがほしい」と考えたことがきっかけで、
+複雑なルールをどこまで正確にコードへ落とし込めるかにも挑戦したいと思い制作しました。
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+ルールは麻雀ゲーム「雀魂」に準拠しています。
 
-## Expanding the ESLint configuration
+## 主な機能
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### メイン画面
+- 四人麻雀 / 三人麻雀のモード切替（三麻では萬子の2〜8を除外、抜きドラ設定を表示）
+- 13枚の手牌選択
+- 副露の設定（ポン・チー・明槓・暗槓）※三麻ではチー無効
+- ドラ表示牌・裏ドラ表示牌（各最大5枚）、赤ドラ
+- 本場・供託、自風・場風
+- リーチ / ダブルリーチ、一発、嶺上開花、槍槓、海底・河底、天和・地和
+- 同じ牌が4枚を超えて選択されないよう、手牌・副露・ドラ表示牌などをまとめてチェック
+- 手牌リセット / 全リセット
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 結果画面
+- 上がり牌ごとに、ツモ・ロンそれぞれの点数を表示
+- 親は「◯◯オール」、子は「◯◯・◯◯」形式で表示
+- 上がり牌が5の牌で赤ドラ未使用の場合、赤ドラで上がったパターンも別途表示
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 点数の詳細
+- 符の内訳（基本符・切り上げを含む）と成立した役を表示
+- 符・飜・満貫以上の区分・点数を表示（役満時は符・飜を非表示）
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 対応している役
+
+| 区分 | 役 |
+|---|---|
+| 通常役 | 立直、ダブル立直、一発、門前清自摸和、平和、断幺九、役牌、一盃口、対々和、混一色、清一色、七対子、嶺上開花、槍槓、海底摸月、河底撈魚、三色同順、一気通貫、三暗刻、混全帯幺九、純全帯幺九、三色同刻、小三元、混老頭 |
+| 役満 | 国士無双、四暗刻、大三元、字一色、清老頭、緑一色、小四喜、大四喜、九蓮宝燈、四槓子、天和、地和 |
+| ダブル役満 | 国士無双十三面待ち、四暗刻単騎、大四喜、純正九蓮宝燈 |
+
+## 使用技術
+
+- React
+- TypeScript
+- Vite
+- Vitest（テスト）
+- ESLint
+- Vercel（デプロイ）
+
+## 工夫した点
+
+### 1. 手牌の分解と最高得点の選択
+同じ手牌でも、面子の分け方によって成立する役や符が変わることがあります。
+すべての分解パターンを列挙し、「飜数が最大 → 同じなら符が最大」のものを採用することで、
+理論上の最高得点を正しく算出するようにしました。
+
+開発中に自分のコードを見直した際、最初に見つかった分解だけで符を計算していたため、
+シャンポン待ちなどで本来より低い点数になるケースがあることに気づき、修正しています。
+
+### 2. 役の複合条件の正確な判定
+役同士の組み合わせには細かいルールがあるため、以下のような条件も実装しています。
+- 嶺上開花はツモ限定で、カンまたは抜きドラが必要
+- 槍槓はロン限定
+- 嶺上開花・槍槓・海底/河底は互いに複合しない
+- 立直はポン・チー・明槓があると不成立
+- ダブル立直は副露や抜きドラがあると通常の立直に降格
+
+### 3. テストによる計算ロジックの検証
+点数計算は間違いに気づきにくいため、Vitestでテストを作成し、ロジックの正しさを確認しています。
+- 役判定（平和ツモ、断幺九＋ドラ、役なし など）
+- 役満（国士無双、十三面待ち など）
+- 符計算（シャンポン待ちでの符の違い）
+- 点数計算（ロン/ツモ、満貫判定、本場、供託、役満倍率）
+
+### 4. ロジックと画面の分離
+聴牌判定・役判定・符計算・点数計算・ドラ計算をUIから切り離して `src/logic/` にまとめ、
+状態管理はカスタムフックに集約することで、ロジック単体でテストしやすい構成にしました。
+
+## ディレクトリ構成（主要部分）
 
 ```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+src/
+├── assets/tiles/       # 牌の画像
+├── components/         # 画面コンポーネント
+├── hooks/              # 状態管理のカスタムフック
+├── logic/              # 聴牌判定・役判定・符/点数/ドラ計算
+│   └── __tests__/      # Vitestのテスト
+└── types/              # 型定義
 ```
+
+## ローカルでの起動方法
+
+```bash
+git clone https://github.com/mackily5531/mahjong-app.git
+cd mahjong-app
+npm install
+npm run dev
+```
+
+テストの実行：
+
+```bash
+npm run test
+```
+
+## 今後の改善予定
+
+- スマートフォンからも利用できるよう対応予定
