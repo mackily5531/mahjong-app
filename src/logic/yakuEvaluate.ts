@@ -29,6 +29,7 @@ import {
   checkSanshokuDoukou,
   checkShousangen,
   checkHonroutou,
+  checkSankantsu,
   WIND_INDEX,
 } from "./yakuCheckers";
 
@@ -230,6 +231,8 @@ export function evaluateYaku(
     if (shousangen) candidates.push(shousangen);
     const honroutou = checkHonroutou(ctx);
     if (honroutou) candidates.push(honroutou);
+    const sankantsu = checkSankantsu(ctx);
+    if (sankantsu) candidates.push(sankantsu);
 
     if (candidates.length === 0) continue; // 役が無い分解は比較対象にしない
 

@@ -6,7 +6,7 @@ import type { YakuResult } from "../types/yaku";
 import type { Meld } from "../types/meld";
 
 export interface HandContext {
-  groups: Group[]; 
+  groups: Group[];
   pairIndex: number;
   isMenzen: boolean;
   winningIndex: number;
@@ -310,4 +310,10 @@ export function checkHonroutou(ctx: HandContext): YakuResult | null {
   return noSequence && allTerminalOrHonor
     ? { key: "honroutou", name: "混老頭", han: 2 }
     : null;
+}
+
+// 三槓子
+export function checkSankantsu(ctx: HandContext): YakuResult | null {
+  const kanCount = ctx.groups.filter((g) => g.isKan).length;
+  return kanCount === 3 ? { key: "sankantsu", name: "三槓子", han: 2 } : null;
 }

@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { evaluateYaku } from "../yakuEvaluate";
 import { defaultHandSettings } from "../../types/handConfig";
 import type { Tile } from "../../types/tile";
+import type { Meld } from "../../types/meld";
 
 // 「1m2m3m」のような文字列から Tile[] を組み立てるテスト用ヘルパー
 function tiles(spec: string): Tile[] {
@@ -90,5 +91,35 @@ describe("evaluateYaku", () => {
       "ron",
     );
     expect(result.isYakuless).toBe(true);
+  });
+  
+  it("三槓子: 槓子3組で2飜", () => {
+    const kan = (
+      suit: Tile["suit"],
+      rank: number,
+      type: "minkan" | "ankan",
+    ): Meld => ({
+      type,
+      tiles: Array.from({ length: 4 }, () => ({ suit, rank })),
+    });
+    const melds = [
+      kan("m", 2, "ankan"),
+      kan("p", 5, "minkan"),
+      kan("s", 8, "minkan"),
+    ];
+    const hand = [...tiles("34s"), ...tiles("66p")];
+    const winningTile: Tile = { suit: "s", rank: 5 };
+
+    const settings = defaultHandSettings("yonma");
+    const result = evaluateYaku(
+      hand,
+      winningTile,
+      melds,
+      "yonma",
+      settings,
+      "ron",
+    );
+
+    expect(result.yaku.some((y) => y.key === "sankantsu")).toBe(true);
   });
 });
